@@ -34,11 +34,10 @@ except qbittorrentapi.LoginFailed as e:
 
 print("got client")
 
-
-  print("commencing reboot")
-  killClient(qbt_client)
-  time.sleep(60)
-  startClient()
+print("commencing reboot")
+killClient(qbt_client)
+time.sleep(60)
+startClient()
 
 print("done")
 
