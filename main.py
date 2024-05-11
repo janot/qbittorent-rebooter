@@ -34,32 +34,10 @@ except qbittorrentapi.LoginFailed as e:
 
 print("got client")
 
-# Determine if we're in a bad connection state
-# This is when there are others in the swarm yet no progress is being made.
-numBadTorrents = 0
-numGoodTorrents = 0
-now = int(time.time())
-for torrent in qbt_client.torrents_info():
-  # check if torrent is downloading
-  if torrent.state_enum.is_downloading:
-    swarmCount = torrent.num_complete + torrent.num_incomplete + torrent.num_seeds + torrent.num_leechs
-    lastChunkDownloadedSecondsAgo = now - torrent.last_activity
-    print(f'last chunk was DL {lastChunkDownloadedSecondsAgo} seconds ago. DL speed is {torrent.dlspeed}. Swarm count {swarmCount}')
 
-    if swarmCount >= 0 and torrent.dlspeed <= 200 and lastChunkDownloadedSecondsAgo > 60*10:
-      print(f'{torrent.name} {torrent.hash} is downloading but is BAD!')
-      numBadTorrents += 1
-    else:
-      print(f'{torrent.name} {torrent.hash} is downloading and is GOOD!')
-      numGoodTorrents += 1
-  else:
-    print(f'{torrent.name} {torrent.hash} is not being counted')
-
-print(f'good {numGoodTorrents} bad {numBadTorrents}')
-if numBadTorrents > 0 and numGoodTorrents == 0:
   print("commencing reboot")
   killClient(qbt_client)
-  time.sleep(10)
+  time.sleep(60)
   startClient()
 
 print("done")
